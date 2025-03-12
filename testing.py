@@ -83,5 +83,16 @@ def test_xss_detection(driver, base_url):
         alert_box = driver.switch_to.alert
         assert alert_box.text == "xss"
         alert_box.accept()
-    except Exception as error:
+    except Exception:
         pytest.fail("XSS alert not triggered.")
+
+if __name__ == '__main__':
+    import sys
+    import pytest
+    # Convert positional argument (if present) into the --base-url option.
+    # E.g., running: python testing.py http://172.17.0.1
+    # becomes: pytest testing.py --base-url=http://172.17.0.1
+    new_args = sys.argv[1:]
+    if new_args and not new_args[0].startswith("--"):
+        new_args = [f"--base-url={new_args[0]}"] + new_args[1:]
+    sys.exit(pytest.main(new_args))
